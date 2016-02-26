@@ -22,7 +22,9 @@ func InitDBConnection() error {
 func RegisterModels() {
 	orm.RegisterModel(
 		&models.User{},
-		&models.Post{},
+		&models.Hashtag{},
+		&models.Photo{},
+		&models.Comment{},
 	)
 }
 
