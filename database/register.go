@@ -4,16 +4,29 @@ import (
 	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/orm"
+	"github.com/instagram-beego/models"
 	_ "github.com/lib/pq"
 )
 
 func InitDBConnection() error {
 	driverName := "postgres"
 	orm.RegisterDriver(driverName, orm.DRPostgres)
-	return orm.RegisterDataBase("default", driverName, GetConnectionString())
+
+	return orm.RegisterDataBase(
+		"default",
+		driverName,
+		getConnectionString(),
+	)
 }
 
-func GetConnectionString() string {
+func RegisterModels() {
+	orm.RegisterModel(
+		&models.User{},
+		&models.Post{},
+	)
+}
+
+func getConnectionString() string {
 	host := beego.AppConfig.String("db_host")
 	username := beego.AppConfig.String("db_user")
 	password := beego.AppConfig.String("db_password")
