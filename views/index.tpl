@@ -6,7 +6,7 @@
 </head>
 <body></body>
 <script>
-  window["apiUrl"] = "http://localhost:8080/api"
+  window["apiUrl"] = "/api"
 </script>
 <script src="/static/js/app.js"></script>
 </html>
