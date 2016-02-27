@@ -3,10 +3,21 @@ import jQuery from 'jquery'
 
 class Auth {
   constructor() {
+    var auth = this
     this.tokenStr = Config.ls.acc.token
     this.displayNameStr = Config.ls.acc.displayName
     this.idStr = Config.ls.acc.id
     this.login()
+
+    jQuery.ajaxSetup({
+      beforeSend: function(request) {
+        if (auth.isLoggedIn()) {
+          request.setRequestHeader(
+            "Token", auth.getToken()
+          );
+        }
+      },
+    })
   }
 
   login(data, cb, cb_e) {
