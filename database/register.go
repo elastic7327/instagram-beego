@@ -10,6 +10,8 @@ import (
 
 func InitDBConnection() error {
 	driverName := "postgres"
+
+	orm.Debug = true
 	orm.RegisterDriver(driverName, orm.DRPostgres)
 
 	return orm.RegisterDataBase(
