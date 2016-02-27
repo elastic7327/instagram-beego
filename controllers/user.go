@@ -39,7 +39,23 @@ func (this *UserController) CreateUser() {
 	this.ServeJSON()
 }
 
+func (this *UserController) Login() {
+	userRepository := repository.UserRepository{}
+	loginFormRequest := request.LoginFormRequest{}
 
-	this.Data["json"] = &user
+	this.ParseForm(&loginFormRequest)
+
+	user, err := userRepository.Login(loginFormRequest.Email, loginFormRequest.Password)
+
+	if err != nil {
+		this.Ctx.Output.SetStatus(400)
+		this.Data["json"] = response.ErrorResponse{
+			ExitCode: 1,
+			Message:  err.Error(),
+		}
+	} else {
+		this.Data["json"] = &user
+	}
+
 	this.ServeJSON()
 }
