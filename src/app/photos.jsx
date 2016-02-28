@@ -104,7 +104,6 @@ class Photo extends React.Component {
       method: 'POST',
       data: {
         content: content,
-        token: token
       },
       success: (resp) => {
         jQuery($input).val('')

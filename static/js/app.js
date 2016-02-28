@@ -39592,8 +39592,7 @@ var Photo = (function (_React$Component3) {
         url: _configJsx2['default'].apiUrl + '/photo/' + id + '/comment',
         method: 'POST',
         data: {
-          content: content,
-          token: token
+          content: content
         },
         success: (function (resp) {
           (0, _jquery2['default'])($input).val('');
