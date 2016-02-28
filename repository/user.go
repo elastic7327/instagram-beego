@@ -18,9 +18,12 @@ func (this *UserRepository) Create(user *models.User) (*models.User, error) {
 
 func (this *UserRepository) Login(email string, password string) (models.User, error) {
 	o := orm.NewOrm()
-	qs := o.QueryTable(&models.User{})
-	user := models.User{}
-	err := qs.Filter("email", email).Filter("password", password).One(&user)
+	user := models.User{
+		Email: email,
+	}
+	err := o.Read(&user, "Email")
+
+	fmt.Println(user)
 
 	// Update Token
 	if err == nil {
@@ -44,9 +47,10 @@ func (this *UserRepository) Update(user *models.User) error {
 
 func (this *UserRepository) GetByToken(token string) (models.User, error) {
 	o := orm.NewOrm()
-	user := models.User{}
-	qs := o.QueryTable(&user)
-	err := qs.Filter("token", token).One(&user)
+	user := models.User{
+		Token: token,
+	}
+	err := o.Read(&user, "Token")
 	return user, err
 }
 
