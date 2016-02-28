@@ -15,14 +15,14 @@ func init() {
 			"post:CreateUser",
 		),
 		beego.NSRouter(
-			"/user/:id",
-			&controllers.UserController{},
-			"get:GetById",
-		),
-		beego.NSRouter(
 			"/user/login",
 			&controllers.UserController{},
 			"get:Login",
+		),
+		beego.NSRouter(
+			"/user/:id",
+			&controllers.UserController{},
+			"get:GetById",
 		),
 		beego.NSRouter(
 			"/photos",
