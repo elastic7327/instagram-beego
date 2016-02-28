@@ -27,7 +27,7 @@ func init() {
 		beego.NSRouter(
 			"/photos",
 			&controllers.PhotoController{},
-			"get:GetByToken",
+			"get:GetAll",
 		),
 	)
 

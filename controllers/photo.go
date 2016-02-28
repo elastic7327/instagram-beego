@@ -10,11 +10,9 @@ type PhotoController struct {
 	beego.Controller
 }
 
-func (this *PhotoController) GetByToken() {
-	token := this.Ctx.Input.Header("token")
+func (this *PhotoController) GetAll() {
 	photoRepository := repository.PhotoRepository{}
-
-	photos, err := photoRepository.GetByToken(token)
+	photos, err := photoRepository.GetAll()
 
 	if err != nil {
 		fmt.Println(err)

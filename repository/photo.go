@@ -7,16 +7,10 @@ import (
 
 type PhotoRepository struct{}
 
-func (this *PhotoRepository) GetByToken(token string) ([]*models.Photo, error) {
-	userRepository := UserRepository{}
+func (this *PhotoRepository) GetAll() ([]*models.Photo, error) {
 	var photos []*models.Photo
 	o := orm.NewOrm()
-	user, err := userRepository.GetByToken(token)
-
-	if err == nil {
-		qs := o.QueryTable(&models.Photo{})
-		qs.Filter("User", user.Id).RelatedSel().All(&photos)
-	}
+	_, err := o.QueryTable(&models.Photo{}).RelatedSel().All(&photos)
 
 	return photos, err
 }
