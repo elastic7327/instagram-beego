@@ -38718,7 +38718,7 @@ var Account = _reactAddons2['default'].createClass({
       success: function success(resp) {
         _this.setState({
           displayName: resp.DisplayName,
-          email: resp.Email.String,
+          email: resp.Email,
 
           // Backup for reset btn
           initialStates: {

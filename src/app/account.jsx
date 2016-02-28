@@ -26,7 +26,7 @@ var Account = React.createClass({
       success: (resp) => {
         this.setState({
           displayName: resp.DisplayName,
-          email: resp.Email.String,
+          email: resp.Email,
 
           // Backup for reset btn
           initialStates: {
