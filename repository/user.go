@@ -50,6 +50,13 @@ func (this *UserRepository) GetByToken(token string) (models.User, error) {
 	return user, err
 }
 
+func (this *UserRepository) GetById(id int) (models.User, error) {
+	o := orm.NewOrm()
+	user := models.User{Id: id}
+	err := o.Read(&user)
+	return user, err
+}
+
 func (this *UserRepository) ValidateToken(token string) (models.User, error) {
 	o := orm.NewOrm()
 	user := models.User{
