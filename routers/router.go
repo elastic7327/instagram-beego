@@ -19,6 +19,11 @@ func init() {
 			&controllers.UserController{},
 			"get:Login",
 		),
+		beego.NSRouter(
+			"/photos",
+			&controllers.PhotoController{},
+			"get:GetByToken",
+		),
 	)
 
 	beego.AddNamespace(ns)
