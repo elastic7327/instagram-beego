@@ -42,7 +42,7 @@ func (this *UserRepository) Update(user *models.User) error {
 	return err
 }
 
-func (this *UserRepository) GetUserByToken(token string) (models.User, error) {
+func (this *UserRepository) GetByToken(token string) (models.User, error) {
 	o := orm.NewOrm()
 	user := models.User{}
 	qs := o.QueryTable(&user)

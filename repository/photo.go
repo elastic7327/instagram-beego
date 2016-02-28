@@ -11,7 +11,7 @@ func (this *PhotoRepository) GetByToken(token string) ([]*models.Photo, error) {
 	userRepository := UserRepository{}
 	var photos []*models.Photo
 	o := orm.NewOrm()
-	user, err := userRepository.GetUserByToken(token)
+	user, err := userRepository.GetByToken(token)
 
 	if err == nil {
 		qs := o.QueryTable(&models.Photo{})
