@@ -88,3 +88,42 @@ func (this *UserController) GetById() {
 
 	this.ServeJSON()
 }
+
+func (this *UserController) Update() {
+	userRepository := repository.UserRepository{}
+	updateFormRequest := request.UpdateFormRequest{}
+
+	token := this.Ctx.Input.Header("token")
+	this.ParseForm(&updateFormRequest)
+
+	user, err := userRepository.GetByToken(token)
+
+	if err != nil {
+		this.Ctx.Output.SetStatus(400)
+		this.Data["json"] = response.ErrorResponse{
+			ExitCode: 1,
+			Message:  err.Error(),
+		}
+	} else {
+		if updateFormRequest.DisplayName != "" {
+			user.DisplayName = updateFormRequest.DisplayName
+		}
+		if updateFormRequest.Email != "" {
+			user.Email = updateFormRequest.Email
+		}
+
+		err = userRepository.Update(&user)
+
+		if err != nil {
+			this.Ctx.Output.SetStatus(400)
+			this.Data["json"] = response.ErrorResponse{
+				ExitCode: 1,
+				Message:  err.Error(),
+			}
+		} else {
+			this.Data["json"] = &user
+		}
+	}
+
+	this.ServeJSON()
+}

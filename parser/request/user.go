@@ -12,6 +12,6 @@ type LoginFormRequest struct {
 }
 
 type UpdateFormRequest struct {
-	DisplayName string `form:displayName`
-	Email       string `form:email`
+	DisplayName string `form:"displayName"`
+	Email       string `form:"email"`
 }

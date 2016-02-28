@@ -22,7 +22,7 @@ func init() {
 		beego.NSRouter(
 			"/user/:id",
 			&controllers.UserController{},
-			"get:GetById",
+			"get:GetById;post:Update",
 		),
 		beego.NSRouter(
 			"/photos",
