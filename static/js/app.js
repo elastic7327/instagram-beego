@@ -38979,10 +38979,19 @@ var Auth = (function () {
   function Auth() {
     _classCallCheck(this, Auth);
 
+    var auth = this;
     this.tokenStr = _configJsx2['default'].ls.acc.token;
     this.displayNameStr = _configJsx2['default'].ls.acc.displayName;
     this.idStr = _configJsx2['default'].ls.acc.id;
     this.login();
+
+    _jquery2['default'].ajaxSetup({
+      beforeSend: function beforeSend(request) {
+        if (auth.isLoggedIn()) {
+          request.setRequestHeader("Token", auth.getToken());
+        }
+      }
+    });
   }
 
   _createClass(Auth, [{
@@ -39090,14 +39099,14 @@ Object.defineProperty(exports, '__esModule', {
 var _prefix = 'sss_';
 
 var Config = {
-  apiUrl: window['apiUrl'] || 'http://localhost:3000',
+  apiUrl: window['apiUrl'] || 'http://localhost:8080',
   // Local Storage
   ls: {
     // Account
     acc: {
-      id: "${_prefix}id",
-      displayName: "${_prefix}displayName",
-      token: "${_prefix}token"
+      id: _prefix + "id",
+      displayName: _prefix + "displayName",
+      token: _prefix + "token"
     }
   }
 };
