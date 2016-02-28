@@ -55,7 +55,11 @@ func (this *UserController) Login() {
 			Message:  err.Error(),
 		}
 	} else {
-		this.Data["json"] = &user
+		this.Data["json"] = &response.LoginResponse{
+			Id:          user.Id,
+			DisplayName: user.DisplayName,
+			Token:       user.Token,
+		}
 	}
 
 	this.ServeJSON()
