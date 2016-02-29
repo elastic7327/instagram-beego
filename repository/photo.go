@@ -11,7 +11,10 @@ type PhotoRepository struct{}
 func (this *PhotoRepository) GetAll() ([]*models.Photo, error) {
 	var photos []*models.Photo
 	o := orm.NewOrm()
-	_, err := o.QueryTable(&models.Photo{}).RelatedSel().All(&photos)
+	_, err := o.
+		QueryTable(&models.Photo{}).
+		RelatedSel().
+		All(&photos)
 
 	for _, photo := range photos {
 		photoIdStr := strconv.Itoa(photo.Id)
@@ -19,7 +22,7 @@ func (this *PhotoRepository) GetAll() ([]*models.Photo, error) {
 		o.
 			QueryTable(&models.Comment{}).
 			Filter("Photo__Id", photoIdStr).
-			RelatedSel().
+			RelatedSel("User").
 			All(&photo.Comments)
 	}
 
