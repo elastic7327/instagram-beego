@@ -7,7 +7,9 @@ import (
 	"github.com/instagram-beego/parser/request"
 	"github.com/instagram-beego/parser/response"
 	"github.com/instagram-beego/repository"
+	"regexp"
 	"strconv"
+	"strings"
 )
 
 type CommentController struct {
@@ -17,6 +19,7 @@ type CommentController struct {
 func (this *CommentController) Create() {
 	commentFormRequest := request.CommentFormRequest{}
 	commentRepo := repository.CommentRepository{}
+	hashtagRepo := repository.HashtagRepository{}
 	userRepo := repository.UserRepository{}
 	var err error
 	var user models.User
@@ -44,7 +47,19 @@ func (this *CommentController) Create() {
 	}
 	comment.User = &user
 
-	this.Data["json"] = &comment
+	hashtags := _getHashtagsFromContent(comment.Content)
+	photo := models.Photo{
+		Id: photoId,
+	}
+
+	for _, hashtag := range hashtags {
+		hashtagModel := models.Hashtag{
+			Name: hashtag,
+		}
+		_, err = hashtagRepo.Create(&photo, &hashtagModel)
+		// fmt.Println(err)
+	}
+
 	_, err = commentRepo.Create(&comment)
 
 	if err != nil {
@@ -58,4 +73,15 @@ func (this *CommentController) Create() {
 	}
 
 	this.ServeJSON()
+}
+
+func _getHashtagsFromContent(content string) []string {
+	rx, _ := regexp.Compile("#(?:[[^]]+]|\\S+)")
+	hashtags := rx.FindAllString(content, -1)
+
+	for i := range hashtags {
+		hashtags[i] = strings.TrimPrefix(hashtags[i], "#")
+	}
+
+	return hashtags
 }
