@@ -19,9 +19,10 @@ func (this *UserRepository) Create(user *models.User) (*models.User, error) {
 func (this *UserRepository) Login(email string, password string) (models.User, error) {
 	o := orm.NewOrm()
 	user := models.User{
-		Email: email,
+		Email:    email,
+		Password: password,
 	}
-	err := o.Read(&user, "Email")
+	err := o.Read(&user, "Email", "Password")
 
 	fmt.Println(user)
 
