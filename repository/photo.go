@@ -23,6 +23,7 @@ func (this *PhotoRepository) GetAll() ([]*models.Photo, error) {
 			QueryTable(&models.Comment{}).
 			Filter("Photo__Id", photoIdStr).
 			RelatedSel("User").
+			OrderBy("-id").
 			All(&photo.Comments)
 	}
 
