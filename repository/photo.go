@@ -17,7 +17,7 @@ func (this *PhotoRepository) GetAll() ([]*models.Photo, error) {
 		RelatedSel().
 		All(&photos)
 
-	err = _getPhotosComment(photos)
+	err = _preprocessPhotos(photos)
 
 	return photos, err
 }
@@ -31,7 +31,7 @@ func (this *PhotoRepository) GetByHashtagName(hashtagName string) ([]*models.Pho
 		RelatedSel().
 		All(&photos)
 
-	err = _getPhotosComment(photos)
+	err = _preprocessPhotos(photos)
 
 	return photos, err
 }
@@ -42,30 +42,36 @@ func (this *PhotoRepository) GetByUserId(userId int) ([]*models.Photo, error) {
 	ps := o.QueryTable(&models.Photo{})
 	_, err := ps.Filter("User", strconv.Itoa(userId)).RelatedSel().All(&photos)
 
-	err = _getPhotosComment(photos)
+	err = _preprocessPhotos(photos)
 
 	return photos, err
 }
 
-func _getPhotosComment(photos []*models.Photo) error {
+func _preprocessPhotos(photos []*models.Photo) error {
 	var err error
 
 	for _, photo := range photos {
-		err = _getPhotoComment(photo)
+		err = _preprocessPhoto(photo)
 	}
 
 	return err
 }
 
-func _getPhotoComment(photo *models.Photo) error {
+func _preprocessPhoto(photo *models.Photo) error {
 	o := orm.NewOrm()
 	photoIdStr := strconv.Itoa(photo.Id)
+
 	_, err := o.
 		QueryTable(&models.Comment{}).
 		Filter("Photo__Id", photoIdStr).
 		RelatedSel("User").
 		OrderBy("-id").
 		All(&photo.Comments)
+
+	o.
+		QueryTable(&models.Hashtag{}).
+		Filter("Photos__Photo__Id", photoIdStr).
+		All(&photo.Hashtags)
 
 	return err
 }
