@@ -30,6 +30,18 @@ func (this *PhotoRepository) GetAll() ([]*models.Photo, error) {
 	return photos, err
 }
 
+func (this *PhotoRepository) GetByHashtagName(hashtagName string) ([]*models.Photo, error) {
+	var photos []*models.Photo
+	o := orm.NewOrm()
+	_, err := o.
+		QueryTable(&models.Photo{}).
+		Filter("Hashtags__Hashtag__Name", hashtagName).
+		RelatedSel().
+		All(&photos)
+
+	return photos, err
+}
+
 func (this *PhotoRepository) GetByUserId(userId int) ([]*models.Photo, error) {
 	var photos []*models.Photo
 	o := orm.NewOrm()
