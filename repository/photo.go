@@ -13,6 +13,16 @@ func (this *PhotoRepository) GetAll() ([]*models.Photo, error) {
 	o := orm.NewOrm()
 	_, err := o.QueryTable(&models.Photo{}).RelatedSel().All(&photos)
 
+	for _, photo := range photos {
+		photoIdStr := strconv.Itoa(photo.Id)
+
+		o.
+			QueryTable(&models.Comment{}).
+			Filter("Photo__Id", photoIdStr).
+			RelatedSel().
+			All(&photo.Comments)
+	}
+
 	return photos, err
 }
 
