@@ -30,6 +30,11 @@ func init() {
 			"get:GetById;post:Update",
 		),
 		beego.NSRouter(
+			"/photo/:photoId/comment",
+			&controllers.CommentController{},
+			"post:Create",
+		),
+		beego.NSRouter(
 			"/photos",
 			&controllers.PhotoController{},
 			"get:GetAll",
