@@ -18,11 +18,24 @@ func (this *CommentController) Create() {
 	commentFormRequest := request.CommentFormRequest{}
 	commentRepo := repository.CommentRepository{}
 	userRepo := repository.UserRepository{}
+	var err error
+	var user models.User
 
 	token := this.Ctx.Input.Header("token")
 	photoId, _ := strconv.Atoi(this.Ctx.Input.Param(":photoId"))
 	this.ParseForm(&commentFormRequest)
-	user, _ := userRepo.GetByToken(token)
+	user, err = userRepo.GetByToken(token)
+
+	if err != nil {
+		this.Ctx.Output.SetStatus(400)
+		this.Data["json"] = &response.ErrorResponse{
+			ExitCode: 1,
+			Message:  "User not found (wrong token)",
+		}
+
+		this.ServeJSON()
+		return
+	}
 
 	comment := models.Comment{}
 	comment.Content = commentFormRequest.Content
@@ -32,7 +45,7 @@ func (this *CommentController) Create() {
 	comment.User = &user
 
 	this.Data["json"] = &comment
-	_, err := commentRepo.Create(&comment)
+	_, err = commentRepo.Create(&comment)
 
 	if err != nil {
 		this.Ctx.Output.SetStatus(400)
