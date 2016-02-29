@@ -1,6 +1,7 @@
 package repository
 
 import (
+	// "fmt"
 	"github.com/astaxie/beego/orm"
 	"github.com/instagram-beego/models"
 	"strconv"
@@ -16,16 +17,7 @@ func (this *PhotoRepository) GetAll() ([]*models.Photo, error) {
 		RelatedSel().
 		All(&photos)
 
-	for _, photo := range photos {
-		photoIdStr := strconv.Itoa(photo.Id)
-
-		o.
-			QueryTable(&models.Comment{}).
-			Filter("Photo__Id", photoIdStr).
-			RelatedSel("User").
-			OrderBy("-id").
-			All(&photo.Comments)
-	}
+	err = _getPhotosComment(photos)
 
 	return photos, err
 }
@@ -39,6 +31,8 @@ func (this *PhotoRepository) GetByHashtagName(hashtagName string) ([]*models.Pho
 		RelatedSel().
 		All(&photos)
 
+	err = _getPhotosComment(photos)
+
 	return photos, err
 }
 
@@ -47,5 +41,31 @@ func (this *PhotoRepository) GetByUserId(userId int) ([]*models.Photo, error) {
 	o := orm.NewOrm()
 	ps := o.QueryTable(&models.Photo{})
 	_, err := ps.Filter("User", strconv.Itoa(userId)).RelatedSel().All(&photos)
+
+	err = _getPhotosComment(photos)
+
 	return photos, err
+}
+
+func _getPhotosComment(photos []*models.Photo) error {
+	var err error
+
+	for _, photo := range photos {
+		err = _getPhotoComment(photo)
+	}
+
+	return err
+}
+
+func _getPhotoComment(photo *models.Photo) error {
+	o := orm.NewOrm()
+	photoIdStr := strconv.Itoa(photo.Id)
+	_, err := o.
+		QueryTable(&models.Comment{}).
+		Filter("Photo__Id", photoIdStr).
+		RelatedSel("User").
+		OrderBy("-id").
+		All(&photo.Comments)
+
+	return err
 }
