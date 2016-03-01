@@ -1,16 +1,66 @@
 package controllers
 
 import (
-	// "fmt"
+	"fmt"
 	"github.com/astaxie/beego"
 	"github.com/instagram-beego/models"
 	"github.com/instagram-beego/parser/response"
 	"github.com/instagram-beego/repository"
+	"github.com/instagram-beego/services"
+	"github.com/joho/godotenv"
+	"os"
 	"strconv"
+	"strings"
+	"time"
 )
+
+func init() {
+	godotenv.Load()
+}
 
 type PhotoController struct {
 	beego.Controller
+}
+
+func (this *PhotoController) Create() {
+	userRepo := repository.UserRepository{}
+	photoRepo := repository.PhotoRepository{}
+
+	token := this.Ctx.Input.Header("token")
+	user, getUserErr := userRepo.GetByToken(token)
+
+	if getUserErr != nil {
+		fmt.Println("Get user by token failed: ", getUserErr.Error())
+		return
+	}
+
+	file, header, _ := this.GetFile("file")
+	bits := strings.Split(header.Filename, ".")
+	fileExt := bits[len(bits)-1]
+	fileName := strconv.Itoa(int(time.Now().Unix())) + "." + fileExt
+
+	uploadS3Err := services.UploadS3(file, fileName)
+
+	if uploadS3Err != nil {
+		fmt.Println("Upload failed: ", uploadS3Err.Error())
+		return
+	}
+
+	photo := models.Photo{
+		Url:  "http://" + os.Getenv("BUCKET") + ".s3-website-" + os.Getenv("AWS_REGION") + ".amazonaws.com/" + fileName,
+		User: &user,
+	}
+
+	_, createPhotoErr := photoRepo.Create(&photo)
+
+	if createPhotoErr != nil {
+		fmt.Println("Create photo failed: ", createPhotoErr.Error())
+		return
+	}
+
+	this.Data["json"] = &photo
+
+	this.ServeJSON()
 }
 
 func (this *PhotoController) GetAll() {
