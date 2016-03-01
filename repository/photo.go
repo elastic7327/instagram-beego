@@ -21,6 +21,7 @@ func (this *PhotoRepository) GetAll() ([]*models.Photo, error) {
 	_, err := o.
 		QueryTable(&models.Photo{}).
 		RelatedSel().
+		OrderBy("-id").
 		All(&photos)
 
 	err = _preprocessPhotos(photos)
@@ -35,6 +36,7 @@ func (this *PhotoRepository) GetByHashtagName(hashtagName string) ([]*models.Pho
 		QueryTable(&models.Photo{}).
 		Filter("Hashtags__Hashtag__Name", hashtagName).
 		RelatedSel().
+		OrderBy("-id").
 		All(&photos)
 
 	err = _preprocessPhotos(photos)
@@ -46,7 +48,11 @@ func (this *PhotoRepository) GetByUserId(userId int) ([]*models.Photo, error) {
 	var photos []*models.Photo
 	o := orm.NewOrm()
 	ps := o.QueryTable(&models.Photo{})
-	_, err := ps.Filter("User", strconv.Itoa(userId)).RelatedSel().All(&photos)
+	_, err := ps.
+		Filter("User", strconv.Itoa(userId)).
+		RelatedSel().
+		OrderBy("-id").
+		All(&photos)
 
 	err = _preprocessPhotos(photos)
 
