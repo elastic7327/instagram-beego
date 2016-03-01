@@ -35,6 +35,11 @@ func init() {
 			"post:Create",
 		),
 		beego.NSRouter(
+			"/photo",
+			&controllers.PhotoController{},
+			"post:Create",
+		),
+		beego.NSRouter(
 			"/photos",
 			&controllers.PhotoController{},
 			"get:GetAll",
