@@ -9,6 +9,12 @@ import (
 
 type PhotoRepository struct{}
 
+func (this *PhotoRepository) Create(photo *models.Photo) (*models.Photo, error) {
+	o := orm.NewOrm()
+	_, err := o.Insert(photo)
+	return photo, err
+}
+
 func (this *PhotoRepository) GetAll() ([]*models.Photo, error) {
 	var photos []*models.Photo
 	o := orm.NewOrm()
